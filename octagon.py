@@ -130,4 +130,4 @@ def discontinuation():
 
 if __name__ == '__main__':
     # Question 1 answer
-    plot_province(m_start=8, ages=AGES[4:7])
+    plot_province(m_start=8)
