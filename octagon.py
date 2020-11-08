@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from openpyxl import load_workbook
 
+# Global Variables and refrences to data. DO NOT MODIFY
 EXCEL = "./Data.xlsx"
 SEX = ('ALL', 'M', 'F')
 PROV = ('ALL', 'AB', 'ON', 'QC', 'BC', 'Atlantic', 'Prairies', 'UNKNWN')
@@ -58,6 +59,7 @@ def plot_province(prov="ALL", measure="Tx", age="ALL", m_start=0, m_end=39):
     :return: VOID. Just plots the data
     """
 
+    # Initialize the data and filter it
     data = filter_data(prov=[prov], measure=[measure], ages=[age], m_start=m_start, m_end=m_end)
     data_female = data[data.sex == "F"]
     data_male = data[data.sex == "M"]
@@ -65,6 +67,7 @@ def plot_province(prov="ALL", measure="Tx", age="ALL", m_start=0, m_end=39):
     female_total = [0 for i in range(len(CON_ACT))]
     male_total = [0 for i in range(len(CON_ACT))]
 
+    # Get all the sums for the data
     for i in range(len(CON_ACT)):
         if data_female[data_female.con_act == CON_ACT[i]].shape[0] > 0:
             female_total[i] += np.sum(data_female[data_female.con_act == CON_ACT[i]].iloc[0, 5:].values)
@@ -74,15 +77,12 @@ def plot_province(prov="ALL", measure="Tx", age="ALL", m_start=0, m_end=39):
     x = np.arange(len(CON_ACT))  # the label locations
     width = 0.35  # the width of the bars
 
+    # Create the rectangles
     fig, ax = plt.subplots()
     rects1 = ax.bar(x - width / 2, male_total, width, label='Male')
     rects2 = ax.bar(x + width / 2, female_total, width, label='Female')
 
-    # Add some text for labels, title and custom x-axis tick labels, etc.
-    ax.set_xticks(x)
-    ax.set_xticklabels(CON_ACT)
-    ax.legend()
-
+    # Place the rectangles in the right place
     for rects in (rects1, rects2):
         for rect in rects:
             height = rect.get_height()
@@ -92,14 +92,18 @@ def plot_province(prov="ALL", measure="Tx", age="ALL", m_start=0, m_end=39):
                         textcoords="offset points",
                         ha='center', va='bottom')
 
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_xticks(x)
+    ax.set_xticklabels(CON_ACT)
+    ax.legend()
     ax.set_ylabel(f"Number of participants from month {m_start} to month {m_end}")
     ax.set_xlabel("Is the patient using another anti-cancer treatment?")
 
     if "ALL" == age:
         if "ALL" == prov:
-            ax.set_title(f"National data for ages 18-65+")
+            ax.set_title(f"National data for ages 18+")
         else:
-            ax.set_title(f"Data for {prov} for ages 18-65+")
+            ax.set_title(f"Data for {prov} for ages 18+")
     else:
         if "ALL" == prov:
             ax.set_title(f"National data for ages {age}")
@@ -116,4 +120,4 @@ def discontinuation():
 
 if __name__ == '__main__':
     # Question 1 answer
-    plot_province(m_start=8)
+    plot_province(m_start=9)
