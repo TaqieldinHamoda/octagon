@@ -115,9 +115,9 @@ def plot_province(prov="ALL", measure=MEASURE, ages=("ALL",), m_start=0, m_end=3
             ax.set_title(f"Data for {prov} for ages 18+")
     else:
         if "ALL" == prov:
-            ax.set_title(f"National data for ages {sorted(ages)[0][:2]}-{sorted(ages)[-1][:2]}")
+            ax.set_title(f"National data for ages {sorted(ages)[0][:2]}-{sorted(ages)[-1][3:]}")
         else:
-            ax.set_title(f"Data for {prov} for ages {sorted(ages)[0][:2]}-{sorted(ages)[-1][:2]}")
+            ax.set_title(f"Data for {prov} for ages {sorted(ages)[0][:2]}-{sorted(ages)[-1][3:]}")
 
     fig.tight_layout()
     plt.show()
@@ -129,4 +129,5 @@ def discontinuation():
 
 if __name__ == '__main__':
     # Question 1 answer
-    plot_province(m_start=9)
+    # print(AGES[2: 7])
+    plot_province(ages=AGES[2:7], m_start=9)
