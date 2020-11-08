@@ -108,17 +108,20 @@ def plot_province(prov="ALL", measure=MEASURE, ages=("ALL",), m_start=0, m_end=3
     ax.set_ylabel(f"Number of participants from month {m_start} to month {m_end}")
     ax.set_xlabel("Is the patient using another anti-cancer treatment?")
 
+    if measure == MEASURE:
+        str_measure = "all"
+    else:
+        str_measure = ", ".join(measure)
+
     if "ALL" in ages:
-        if "ALL" == prov:
-            ax.set_title(f"National data for ages 18+")
-        else:
-            ax.set_title(f"Data for {prov} for ages 18+")
+        str_ages = "18+"
     else:
         str_ages = ", ".join(sorted(ages))
-        if "ALL" == prov:
-            ax.set_title(f"National data for ages {str_ages}")
-        else:
-            ax.set_title(f"Data for {prov} for ages {str_ages}")
+
+    if "ALL" == prov:
+        ax.set_title(f"National data for ages {str_ages} using {str_measure} measure(s)")
+    else:
+        ax.set_title(f"Data for {prov} for ages {str_ages} using {str_measure} measure(s)")
 
     fig.tight_layout()
     plt.show()
@@ -130,4 +133,6 @@ def discontinuation():
 
 if __name__ == '__main__':
     # Question 1 answer
-    plot_province(m_start=8)
+    # plot_province(m_start=8)
+
+    plot_province(prov="ON", measure=["Tx"], ages=AGES[3:8])
