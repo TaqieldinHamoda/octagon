@@ -88,8 +88,8 @@ def plot_province(prov="ALL", measure=MEASURE, ages=("ALL",), m_start=0, m_end=3
 
     # Create the rectangles
     fig, ax = plt.subplots()
-    rects1 = ax.bar(x - width / 2, male_total, width, label='Male')
     rects2 = ax.bar(x + width / 2, female_total, width, label='Female')
+    rects1 = ax.bar(x - width / 2, male_total, width, label='Male')
 
     # Place the rectangles in the right place
     for rects in (rects1, rects2):
@@ -129,4 +129,4 @@ def discontinuation():
 
 if __name__ == '__main__':
     # Question 1 answer
-    plot_province(prov=PROV[-1])
+    plot_province(m_start=8)
