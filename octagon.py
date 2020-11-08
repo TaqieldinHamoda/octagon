@@ -49,18 +49,22 @@ def filter_data(prov=PROV, con_act=CON_ACT, sex=SEX, ages=AGES, measure=MEASURE,
     return pd.concat([data.iloc[:, :5], data.iloc[:, m_start + 5:m_end + 6]], axis=1, sort=False)
 
 
-def plot_province(prov="ALL", measure="Tx", age="ALL", m_start=0, m_end=39):
+def plot_province(prov="ALL", measure=MEASURE, ages=("ALL",), m_start=0, m_end=39):
     """
     :param prov: String of the province to plot data for
-    :param measure: String of the measure to plot data for
-    :param age: String of the age to plot data for
+    :param measure: List of the measures to plot data for
+    :param ages: List of the ages to plot data for
     :param m_start: Integer of the start month
     :param m_end: Integer of the end month
     :return: VOID. Just plots the data
     """
 
+    if (len(ages) > 1) and ("ALL" in ages):
+        raise Exception("Can't have 'ALL' with other ages")
+
     # Initialize the data and filter it
-    data = filter_data(prov=[prov], measure=[measure], ages=[age], m_start=m_start, m_end=m_end)
+    data = filter_data(prov=[prov], measure=measure, ages=ages, m_start=m_start, m_end=m_end)
+
     data_female = data[data.sex == "F"]
     data_male = data[data.sex == "M"]
 
@@ -69,10 +73,15 @@ def plot_province(prov="ALL", measure="Tx", age="ALL", m_start=0, m_end=39):
 
     # Get all the sums for the data
     for i in range(len(CON_ACT)):
-        if data_female[data_female.con_act == CON_ACT[i]].shape[0] > 0:
-            female_total[i] += np.sum(data_female[data_female.con_act == CON_ACT[i]].iloc[0, 5:].values)
-        if data_male[data_male.con_act == CON_ACT[i]].shape[0] > 0:
-            male_total[i] += np.sum(data_male[data_male.con_act == CON_ACT[i]].iloc[0, 5:].values)
+        for m in measure:
+            for a in ages:
+                female = data_female[(data_female.con_act == CON_ACT[i]) & (data_female.measure == m) & (data_female.age == a)]
+                male = data_male[(data_male.con_act == CON_ACT[i]) & (data_male.measure == m) & (data_male.age == a)]
+
+                if female.shape[0] > 0:
+                    female_total[i] += np.sum(female.iloc[0, 5:].values)
+                if male.shape[0] > 0:
+                    male_total[i] += np.sum(male.iloc[0, 5:].values)
 
     x = np.arange(len(CON_ACT))  # the label locations
     width = 0.35  # the width of the bars
@@ -99,16 +108,16 @@ def plot_province(prov="ALL", measure="Tx", age="ALL", m_start=0, m_end=39):
     ax.set_ylabel(f"Number of participants from month {m_start} to month {m_end}")
     ax.set_xlabel("Is the patient using another anti-cancer treatment?")
 
-    if "ALL" == age:
+    if "ALL" in ages:
         if "ALL" == prov:
             ax.set_title(f"National data for ages 18+")
         else:
             ax.set_title(f"Data for {prov} for ages 18+")
     else:
         if "ALL" == prov:
-            ax.set_title(f"National data for ages {age}")
+            ax.set_title(f"National data for ages {sorted(ages)[0][:2]}-{sorted(ages)[-1][:2]}")
         else:
-            ax.set_title(f"Data for {prov} for ages {age}")
+            ax.set_title(f"Data for {prov} for ages {sorted(ages)[0][:2]}-{sorted(ages)[-1][:2]}")
 
     fig.tight_layout()
     plt.show()
