@@ -3,10 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from openpyxl import load_workbook
 
-# Global Variables and refrences to data. DO NOT MODIFY
+# Global Variables and references to data. DO NOT MODIFY
 EXCEL = "./Data.xlsx"
 SEX = ('ALL', 'M', 'F')
-PROV = ('ALL', 'AB', 'ON', 'QC', 'BC', 'Atlantic', 'Prairies', 'UNKNWN')
+PROV = ('ALL', 'AB', 'ON', 'QC', 'BC', 'Atlantic', 'Prairies', 'UNKWN')
 CON_ACT = ('ALL', 'Yes', 'No', 'Null')
 MEASURE = ('Tx', 'events', 'censored')
 AGES = tuple(["ALL", "18-19"] + [f"{i}-{i+4}" for i in range(20, 61, 5)] + ["65+"])
@@ -129,5 +129,4 @@ def discontinuation():
 
 if __name__ == '__main__':
     # Question 1 answer
-    # print(AGES[2: 7])
-    plot_province(ages=AGES[2:7], m_start=9)
+    plot_province(prov=PROV[-1])
