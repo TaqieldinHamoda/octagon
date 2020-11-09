@@ -161,7 +161,7 @@ def _plot_discont(_prov, _ages):
             for d in range(1, 40):
                 m_before = female_months[d - 1]
                 m_after = female_months[d]
-                female_rate += np.abs(m_before - m_after)
+                female_rate += np.abs(m_before - m_after)/m_before
 
                 if (m_after == 0) or (d == 39):
                     female_rate = female_rate / (d + 1)
@@ -170,14 +170,14 @@ def _plot_discont(_prov, _ages):
             for d in range(1, 40):
                 m_before = male_months[d - 1]
                 m_after = male_months[d]
-                male_rate += np.abs(m_before - m_after)
+                male_rate += np.abs(m_before - m_after)/m_before
 
                 if (m_after == 0) or (d == 39):
                     male_rate = male_rate / (d + 1)
                     break
 
-            female_total[i, 4] = female_rate
-            male_total[i, 4] = male_rate
+            female_total[i, 4] = 100*female_rate
+            male_total[i, 4] = 100*male_rate
 
     return female_total, male_total
 
@@ -275,13 +275,12 @@ if __name__ == '__main__':
     final = np.zeros(40)
     d = filter_data(prov=("ALL",), con_act=("ALL",), sex=("ALL",), ages=("ALL",))
 
-    final += np.array(d[d.measure == MEASURE[0]].iloc[0, 5:].values, dtype=np.int)
-    final += np.array(d[d.measure == MEASURE[1]].iloc[0, 5:].values, dtype=np.int)
-    final += np.array(d[d.measure == MEASURE[2]].iloc[0, 5:].values, dtype=np.int)
+    for m in MEASURE:
+        final += np.array(d[d.measure == m].iloc[0, 5:].values, dtype=np.int)
 
     disc = 0
 
     for i in range(1, 40):
-        disc += np.abs(final[i - 1] - final[i])
+        disc += np.abs(final[i - 1] - final[i])/final[i - 1]
 
     print(disc/40)
